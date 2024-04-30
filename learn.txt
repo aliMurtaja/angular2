@@ -1,0 +1,358 @@
+
+
+                %%%###%%%       LEARNING GIT FROM ZERO TO HERO TO ADVANCE      %%%###%%%
+                %%%###%%%       CREATED BY --> ALI MURTAJA                     %%%###%%%
+                %%%###%%%       murtajaali10@gmail.com                         %%%###%%%
+                %%%###%%%       750949434                                      %%%###%%%
+
+
+
+--------------BASIC
+
+- whenever we run angular project in chrome, and if you see `view page source`, it has only::
+
+        <!doctype html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8">
+        <title>MyFirstApp</title>
+        <base href="/">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link rel="stylesheet" href="styles.css"></head>
+        <body>
+        <app-root></app-root>
+        <script src="runtime.js" defer></script><script src="polyfills-es5.js" nomodule defer></script><script src="polyfills.js" defer></script><script src="styles.js" defer></script><script src="vendor.js" defer></script><script src="main.js" defer></script></body>
+        </html>
+
+    - so here, you can see `script` Tag and its `script` responsibility to run our app in respect of angular.
+    - it means, at the end angular creates bundls our builds and uses these bundle to make most of angular.
+
+
+## selector::
+        @Component({
+                selector: 'app-root',
+                templateUrl: './app.component.html',
+                styleUrls: ['./app.component.css']
+        })
+
+        here's::
+                <app-root></app-root> is kind of component, directive(we are giving instruction to angular in template file)
+
+
+## TS with Angular::
+        - keep in mind it is ts file, so whatever we write here, will compile by tsc.
+        - and angular is library which expose lot of APIs, and those APIS is in respect of TS.
+        - For example we know that decoratore is part of TS not js. and angular expose lot of decorator which we can use in ts file.
+        -  why ts --> the reason is that simple js is not capabale to execute any decorator,
+        - that's why we are using `@Component` decorator in ts file --> `app.component.ts`
+        - and `angular` not only provides decorator, it provides a lot of things(APIs) and those could be in respect of ts or simple js
+                @Component({
+                selector: 'app-root',
+                templateUrl: './app.component.html',
+                styleUrls: ['./app.component.css']
+                })
+
+
+##
+        <!-- bcs we use angular syntex in form thats'y we have to inform angular by registering `FormsModule` in app.module.ts  -->
+                <input type="text" [(ngModel)]="name">
+
+
+##style --> angular.json
+   "styles": [
+    "node_modules/bootstrap/dist/css/bootstrap.min.css",
+    "src/styles.css"
+  ],
+
+    - this is our global style, take care of the order of the file with the respect to override
+  
+
+## boot app(bootstrap the app)
+        
+        src/main.ts --> app/app.module --> app/app.component.ts --> app/app.component.html --> created build(using webpack tools) --> insert to index.html(src/index.html)
+
+        NOTE THAT::
+                app ::
+                        - this is main folder, you can think it as a our whole application module.
+                        - it means all the component related to our application will go here.
+
+
+## why component::
+        <app-servers></app-servers>::   it is elements which has its template/css/ts, a whole in one place.
+                                        so if we want to use it another palce we can simply use it, so its re-usable
+
+
+## NOTE THAT::
+        - here we register our component
+        declarations: [
+                AppComponent,
+                ServerComponent,
+                ServersComponent,
+                SecondAppComponent
+        ],
+
+        - as we can split our component into multiple component.
+        - we could also split our module into multiple module.
+        - since till now we doesn't have our any custome module.
+        - but angular also splite their own module, that't we are using those. 
+        imports: [
+                BrowserModule,  --> to simple run our app in browser
+                FormsModule,    --> to use Form related APIs 
+        ],
+        providers: [],
+
+        - here we boot our root app
+        - since we kw that we only use only one selector in index.html.
+        - so we will pass only one component to be boot in index.html
+        bootstrap: [AppComponent]
+
+## way of template/style::
+        1)  @Component({
+                        selector: 'app-servers',
+                        templateUrl: './server.component.html'
+                        styleUrls: ['./servers.component.css']
+                })
+
+        2)    @Component({
+                        selector: 'app-servers',
+                        template: `
+                                <app-server></app-server>
+                                <app-server></app-server>`,
+                        styles: [`
+                                h3 {
+                                color: dodgerblue;
+                                }
+                        `]
+                })
+
+                - NOTE THAT you only use array in either `styles` or `templateUrl`, but in `template` and `templateUrl` you can only pass string.
+                - in each components, css styles are bound only respective component, it doesn't effect another one component elements.
+
+## way of selector::
+        @Component({
+                // selector: '[app-servers]',
+                // selector: '.app-servers',
+                selector: 'app-servers',
+                // templateUrl: "./servers.component.html",
+                template: `
+                        <app-server></app-server>
+                        <app-server></app-server>`,
+                styleUrls: ['./servers.component.css']
+        })
+
+        - selector is just like css selector 
+                - For example `h1` in html and its selector in css is `h1{color: "red"}`.
+                - [app-servers] <-- selector use as attribut just like css
+                        <div app-servers ></div>
+                - .app-servers <-- selector use as a class name
+                        <div class= "app-servers" ></div>
+                - NOTE THAT `sudo` and `id` selector don't work
+
+##Binding(communication)
+
+        // One way data-binding
+        - <button
+                class="btn btn-primary"
+                [disabled]="!allowNewServer"  <-- we are attaching native property(DOM) with ts
+                (click)="onCreateServer()">   <-- we are attaching native event(DOM) with ts
+                Add Server
+        </button>
+
+        - <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="serverName" <-- Two way data-binding 
+        >
+
+## NOTE THAT::
+       1) <p
+                [ngStyle]="{backgroundColor: getColor()}"
+                [ngClass]="{online: serverStatus === 'online'}">
+        </p>
+
+        ngStyle  --> This is directive, but we alone this won't work, we need to use property-binding on it, on the other hand for structural-directive we use * as prefix.
+
+
+        2) custome component binding(bind custome properties/methodes in custome component/selector)  
+
+                - since we can't use any `property and methode` in another component.
+                - If we want it, we need to expose that `property and methode` by using `@Input/@Output()` decorators
+           
+                @Input('srvElement') element: {type: string, name: string, content: string};
+                        - It means, we cant take `srvElement` from another component
+                        ex::
+                                <app-server-element
+                                        *ngFor="let serverElement of serverElements"
+                                        [srvElement]="serverElement"
+                                >
+        
+                @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
+                @Output('bpCreated') blueprintCreated = new EventEmitter<{serverName: string, serverContent: string}>(); 
+                        - It means, we cant trigge `serverCreated/bpCreated` event in another component
+                        ex::
+                                 <app-cockpit
+                                        (serverCreated)="onServerAdded($event)"
+                                        (bpCreated)="onBlueprintAdded($event)"
+                                ></app-cockpit>
+
+        3) <input
+                type="text"
+                class="form-control"
+                #serverNameInput
+        >
+
+                here  `serverNameInput` is reference variable for this specific HTMLelement.
+                NOTE THAT you only use this variable in respective html file only.
+                but if want to use in .ts file use::
+                        @ViewChild('serverContentInput', { static: false }) serverContentInput: ElementRef;
+                                - But keep in mind do not modify the any element by using its reference-type, you could do that but it is not recommaded way to do that.
+
+        4) @Component({
+                selector: 'app-server-element',
+                templateUrl: './server-element.component.html',
+                styleUrls: ['./server-element.component.css'],
+                encapsulation: ViewEncapsulation.None  // Emulated, Native
+        })
+                encapsulation: is view encapsulation for css, we gave `None`, it means it won't encapsulate css to its respective component but rather apply it global which is bad.
+                Emulated --> is default, which emulates the view
+
+        5)
+                server-element.component.html  <-- file
+                        <ng-content></ng-content>
+                        - This is special directive/component which holds the element are coming as a child of this(server-element.component.html) component
+
+        6)
+                <li><a href="#" (click)="onSelect('recipe')">Recipes</a></li>
+
+                - here we passed `recipe` as a string it is ok, but what about actual event data($event) bcs we are using it in html Element.
+                - it is optional argument, but we can use it any-where in the argument list
+                        ex::
+                                <li><a href="#" (click)="onSelect('recipe')">Recipes</a></li>
+                                <li><a href="#" (click)="onSelect('recipe', $event)">Recipes</a></li>
+                                <li><a href="#" (click)="onSelect($event, 'recipe')">Recipes</a></li>
+                                <li><a href="#" (click)="onSelect('recipe', $event, "5")">Recipes</a></li>
+                                <li><a href="#" (click)="onSelect()">Recipes</a></li>
+
+        7)      - we can't use multiple structural-binding on same element
+                        ex:: <p *ngSwitchCase="5" *ngIf="true">Value is 5</p> <--wrong
+                                //Error: Errors during JIT compilation of template for AppComponent: Can't have multiple template bindings on one element. Use only one attribute prefixed with * ("    
+
+
+        8)
+                - In this module we have to get communicated done between component by using event/properties binding.
+                - and as application grows, the more complexicity come.
+                - so here's, dependency-injection comes into the picture.
+                - NOTE THAT service is nothing but simple class, there is no any decoratore to configure any sevrvice.
+                        ex:: D:\MURTAJA\LEARNING\Angular_2+\PART-9-NOTES\project-template\src\app\logging.service.ts
+
+                - To make service injectable, it have to be decorated with `@Injectable()`
+                - NOTE THAT only receiving service will be decorated not a service which is being injected
+                - NOTE THAT to inject service into another service, we have to provide(register) in app.module.ts
+                        see:: D:\MURTAJA\LEARNING\Angular_2+\PART-9-NOTES\project-template\src\app\accounts.service.ts
+
+
+                VVV IMP::
+                        - If you provide service, then its all children component will use same service untill/unless you use same service in child component.
+                        - If you use same service in child component, it will be totally different instance of that component only and its child component. ( Or override the parent service)
+
+                NOTE THAT::  DEPENDENCY INJECTION
+
+                          constructor(private accountsService: AccountsService)  ---> This is called `DEPENDENCY`
+
+                          @NgModule({
+                                declarations: [
+                                        AppComponent,
+                                        AccountComponent,
+                                        NewAccountComponent
+                                ],
+                                imports: [
+                                        BrowserModule,
+                                        FormsModule,
+                                ],
+                                providers: [AccountsService, LoggingService],  ---> This is called `INJECTION`
+                                bootstrap: [AppComponent]
+                        })
+
+                see:: D:\MURTAJA\LEARNING\Angular_2+\PART-9-NOTES\project-template\src\app
+
+        9) IMP::
+                D:\MURTAJA\LEARNING\Angular_2+\PART-10-NOTES\project-template\src\app\shopping-list\shopping-list.service.ts
+        
+        10) IMP::
+                <router-outlet></router-outlet>
+                    - All its child route will render here
+
+
+        11)        this.route.queryParams
+                        .subscribe(
+                                (queryParams: Params) => {
+                                this.allowEdit = queryParams['allowEdit'] === '1' ? true : false;
+                                }
+                        );
+        - Here we subscribe `queryParams` Obserable, we don't have to unsubscribe `@angular/router` do when we unmount(navigate) another route
+
+------------------------------CLI
+
+- ng new [appName] --no-strict
+        - here `--no-strict`, we are saying to angular not to create our project in strict mode
+        - it has to do with optimization
+
+
+
+- ng g c [componentName]    (OR  ng generate component [componentName])
+        - to generate new component.
+        here::
+                g :: to generate new elements (angular element)
+                c :: the element is component.
+
+
+- ng g c [componentName] --skipTests true    (OR  ng generate component [componentName] --skipTests true )
+        - To not to created spec.ts files
+
+--------------------IMPORTANT-things
+
+##      
+        directives modify how elements behave or look in the DOM, while data binding ensures that the UI and component data remain synchronized. Both concepts are crucial in Angular applications, as they contribute to building dynamic and interactive user interfaces.
+
+##      
+        we know that directives modify how elements behave or look in the DOM, 
+        so directive could be::
+                - custome component:
+                        <app-selector></app-selector>
+                - built-in:
+                        structural:
+                                *ngIf, *ngFor etc
+                        attribut:
+                                [ngClass] , [ngStyle] etc
+                - custome:
+                        structural:
+                                
+                        attribut:
+
+        see:: D:\MURTAJA\LEARNING\Angular_2+\PART-7-NOTES\project-template\src\app\better-highlight\better-highlight.directive.ts
+              D:\MURTAJA\LEARNING\Angular_2+\PART-7-NOTES\project-template\src\app\basic-highlight\basic-highlight.directive.ts
+              D:\MURTAJA\LEARNING\Angular_2+\PART-7-NOTES\project-template\src\app\app.component.html
+              D:\MURTAJA\LEARNING\Angular_2+\PART-7-NOTES\project-template\src\app\unless.directive.ts
+
+##
+        - while both directives and components use selectors to target elements in the DOM, their primary purposes are different. Directives modify the behavior or appearance of elements, while components encapsulate templates, styles, and logic to create reusable UI elements. Components are more feature-rich and can stand alone as meaningful parts of a web application's user interface, whereas directives are often used to enhance the behavior of existing elements.
+        - To clarify further, a component can be thought of as a specific type of directive with a template, while a directive can encompass a broader range of use cases, including modifying existing elements without having a full template of its own.
+
+
+
+##
+        const server = this.servers.find(
+                (s) => {
+                        return s.id === id;
+                }
+        );
+
+        // In this example(if index is 0), server and servers[0] are indeed referencing the same object in memory because the find method returns a reference to the found object in the array.
+        // console.log("updateServerupdateServer", server === this.servers[0]);
+
+        see:: D:\MURTAJA\LEARNING\Angular_2+\PART-12-NOTES\project-template\src\app\servers\servers.service.ts
+
+                              
+

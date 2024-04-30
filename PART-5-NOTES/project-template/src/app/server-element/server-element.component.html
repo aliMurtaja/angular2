@@ -1,0 +1,10 @@
+<div
+  class="panel panel-default">
+  <!--<div class="panel-heading">{{ element.name }}</div>-->
+  <div class="panel-heading" #heading>{{ name }}</div>
+  <div class="panel-body">
+
+    <!-- This is special directive/component which holds the element are coming as a child of this(server-element.component.html) component -->
+    <ng-content></ng-content>
+  </div>
+</div>

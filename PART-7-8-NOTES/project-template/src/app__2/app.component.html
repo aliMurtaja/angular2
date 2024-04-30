@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button
+        class="btn btn-primary"
+        (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            [ngClass]="{odd: odd % 2 !== 0}"
+            [ngStyle]="{backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'}"
+            *ngFor="let odd of oddNumbers">
+            {{ odd }}
+          </li>
+        </div>
+        <!-- Keep in mind there is no * meaning in angular, but angular transform it into property binding, but it is nicer way to write any structural directive -->
+        <!-- <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            [ngClass]="{odd: even % 2 !== 0}"
+            [ngStyle]="{backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'}"
+            *ngFor="let even of evenNumbers">
+            {{ even }}
+          </li>
+        </div>
+
+        // Behing the scene angular transforme above into below
+        // ng-template ==> provided by angular to render to render template conditionaly 
+        <ng-template [ngIf]="!onlyOdd">
+          <div>
+            <li
+              class="list-group-item"
+              [ngClass]="{odd: even % 2 !== 0}"
+              [ngStyle]="{backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'}"
+              *ngFor="let even of evenNumbers">
+              {{ even }}
+            </li>
+          </div>
+        </ng-template> -->
+        <div *appUnless="onlyOdd">
+          <li
+            class="list-group-item"
+            [ngClass]="{odd: even % 2 !== 0}"
+            [ngStyle]="{backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'}"
+            *ngFor="let even of evenNumbers">
+            {{ even }}
+          </li>
+        </div>
+      </ul>
+      
+
+      <!-- - When you use the directive as an attribute with square brackets [appBasicHighlight], it applies the style to the entire <p> element because the attribute binding is applied to the element itself.
+      - However, when you use the directive as an element, like <appBasicHighlight><p>Style me with basic directive!</p></appBasicHighlight>, the issue you're facing is due to Angular's View Encapsulation. Angular encapsulates styles to prevent them from affecting elements outside their component's scope. Since you're trying to apply styles to the content of the appBasicHighlight element, the encapsulation is affecting the way styles are applied. -->
+      <p [appBasicHighlight]>Style me with basic directive!</p>
+      <!-- <appBasicHighlight>
+        <p>Style me with basic directive!</p>
+      </appBasicHighlight> -->
+
+      <!-- Here `appBetterHighlight` is our Directive and property name, so we used both simultanouslly -->
+      <!-- defaultColor="yellow"  ==>>
+          - here we bind the property to directive.
+          - since here, we binded the directive, so when angular analysis this element fist it sees the `defaultColor` properties in directive before reacing the actual dom properties 
+          - this is Alternative of ([defaultColor]="'yellow'"), the reason is that this is property and we are passing data which is string.
+        -->
+      <p [appBetterHighlight]="'red'" defaultColor="yellow">Style me with a better directive!</p>
+
+      <p [appBetterHighlight]="'red'" [defaultColor]="'yellow'">Style me with a better directive!</p>
+      
+      <div [ngSwitch]="value">
+        <p *ngSwitchCase="5">Value is 5</p>
+        <p *ngSwitchCase="10">Value is 10</p>
+        <p *ngSwitchCase="100">Value is 100</p>
+        <p *ngSwitchDefault>Value is Default</p>
+      </div>
+    </div>
+  </div>
+</div>
